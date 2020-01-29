@@ -6,4 +6,15 @@
     </div>
     <div class="col-sm-2 col-md-2 col-lg-2"></div>
   </div>
+  <div class="row text-center">
+    <div class="col-sm-2 col-md-2 col-lg-2"></div>
+    <div class="col-sm-8 col-md-8 col-lg-8 shadow rounded" id="apptitle-holder">
+      <mat-form-field>
+        <input matInput [matDatepicker]="picker" placeholder="Choose a date">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <div class="col-sm-2 col-md-2 col-lg-2"></div>
+  </div>
 </div>
