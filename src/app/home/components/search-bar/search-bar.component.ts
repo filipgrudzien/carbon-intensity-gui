@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { CarbonApiService } from 'src/app/core/services/carbon-api.service';
 
 @Component({
   selector: 'app-search-bar',
@@ -9,12 +10,17 @@ import { FormControl } from '@angular/forms';
 export class SearchBarComponent implements OnInit {
 
   public searchTitle = 'search bar';
-  date = new FormControl(new Date());
-  serializedDate = new FormControl((new Date()).toISOString());
+  searchForm = new FormGroup({
+    date: new FormControl(new Date(), [Validators.required])
+  });
 
-  constructor() { }
+  constructor(private carbonApiService: CarbonApiService) { }
 
   ngOnInit() {
+  }
+
+  public submitSearch(): void {
+    this.carbonApiService.getCarbonIntensityPrognosis(this.searchForm.value.date);
   }
 
 }
