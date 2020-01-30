@@ -20,7 +20,9 @@ export class SearchBarComponent implements OnInit {
   }
 
   public submitSearch(): void {
-    this.carbonApiService.getCarbonIntensityPrognosis(this.searchForm.value.date);
+    this.carbonApiService.getDailyCarbonIntensityPrognosis(this.searchForm.value.date).subscribe(
+      result => console.log(result)
+    );
   }
 
 }
