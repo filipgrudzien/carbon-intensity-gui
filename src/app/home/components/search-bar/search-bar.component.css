@@ -1,7 +1,11 @@
-#search-bar-holder {
+#search-bar-name {
     margin: 15px 0px 20px 0px;
 }
 
 #submitter {
     margin-bottom: 15px;
+}
+
+#search-bar-container {
+    margin-bottom: 25px;
 }

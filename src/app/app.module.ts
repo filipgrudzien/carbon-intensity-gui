@@ -10,11 +10,13 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { NoopAnimationsModule, BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { SearchResultComponent } from './home/components/search-result/search-result.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SearchBarComponent,
+    SearchResultComponent,
   ],
   imports: [
     AppRoutingModule,

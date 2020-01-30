@@ -18,7 +18,7 @@ export class CarbonApiService {
   }
 
   private getDailyMappedApiResult(date: Date): Observable<Array<CarbonIntensityDto>> {
-    const parsedDate = this.parseDate(date);
+    const parsedDate = this.parseDateToString(date);
     const allResults = new Array<CarbonIntensityDto>();
     const finalResult$ = this.http.get(this.API_URL + '/' + parsedDate)
       .pipe(
@@ -34,16 +34,12 @@ export class CarbonApiService {
           return this.prepareResultsForDisplay(allResults);
         }),
       );
-
     return finalResult$;
   }
 
-  private parseDate(date: Date): string {
-    return date.toISOString().split('T')[0];
-  }
-
   private prepareResultsForDisplay(allResults: Array<CarbonIntensityDto>): Array<CarbonIntensityDto> {
-    return Array.of(this.retrieveMaxForeCastPrognosis(allResults),
+    return Array.of(
+      this.retrieveMaxForeCastPrognosis(allResults),
       this.retrieveMinForeCastPrognosis(allResults),
       this.retrieveMaxMeasuredPrognosis(allResults),
       this.retrieveMinMeasuredPrognosis(allResults),
@@ -84,7 +80,7 @@ export class CarbonApiService {
       averageMeasuredIntensity / allResults.length,
       null,
       null,
-      allResults[0].getMeasuringTime());
+      this.parseStringToDate(allResults[0].getMeasuringTime()));
   }
 
   private calculateAverageForecastPrognosis(allResults: Array<CarbonIntensityDto>): CarbonIntensityDto {
@@ -96,7 +92,14 @@ export class CarbonApiService {
       averageForecastIntensity / allResults.length,
       null,
       null,
-      allResults[0].getMeasuringTime());
+      this.parseStringToDate(allResults[0].getMeasuringTime()));
   }
 
+  private parseDateToString(date: Date): string {
+    return date.toISOString().split('T')[0];
+  }
+
+  private parseStringToDate(date: string): string {
+    return date.split('T')[0];
+  }
 }
