@@ -33,4 +33,8 @@ export class CarbonIntensityResult {
     public getIntensityIndex(): string {
         return this.intensityIndex;
     }
+
+    /* public getResultTypeValue() {
+        return CarbonIntensityResultType[this.resultType.toString()];
+    } */
 }
