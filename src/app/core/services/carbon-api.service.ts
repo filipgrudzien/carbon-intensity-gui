@@ -17,7 +17,14 @@ export class CarbonApiService {
   private readonly HIGH_INDEX = 'high';
   private readonly FIRST_ELEMENT_POSITION = '0';
 
+  private submitSender = new Subject<Date>();
+  submitSent$ = this.submitSender.asObservable();
+
   constructor(private http: HttpClient) { }
+
+  sendSubmissionData(date: Date) {
+    this.submitSender.next(date);
+  }
 
   public getDailyCarbonIntensityPrognosis(date: Date): Observable<Array<CarbonIntensityResult>> {
     return this.getDailyMappedApiResult(date);
@@ -135,7 +142,6 @@ export class CarbonApiService {
         indexMap.set(this.HIGH_INDEX, indexMap.get(this.HIGH_INDEX) + 1);
       }
     });
-    console.log(indexMap);
     let maxCounter = [indexMap.get(this.LOW_INDEX), indexMap.get(this.MODERATE_INDEX), indexMap.get(this.HIGH_INDEX)]
       .sort()
       .reverse()[this.FIRST_ELEMENT_POSITION];

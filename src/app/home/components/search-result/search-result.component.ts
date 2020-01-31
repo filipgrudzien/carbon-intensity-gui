@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { CarbonApiService } from 'src/app/core/services/carbon-api.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-search-result',
@@ -7,9 +9,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SearchResultComponent implements OnInit {
 
-  public resultsTitle = 'search bar';
+  public resultsTitle = 'results';
 
-  constructor() { }
+  constructor(private carbonApiService: CarbonApiService) {
+    carbonApiService.submitSent$.subscribe(
+      date => {
+        this.carbonApiService.getDailyCarbonIntensityPrognosis(date).subscribe(
+          result => {
+            console.log('dostalem', result);
+          });
+      });
+  }
 
   ngOnInit() {
   }

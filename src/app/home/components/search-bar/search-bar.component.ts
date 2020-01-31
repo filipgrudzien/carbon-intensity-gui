@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { CarbonApiService } from 'src/app/core/services/carbon-api.service';
 
 @Component({
@@ -16,13 +16,10 @@ export class SearchBarComponent implements OnInit {
 
   constructor(private carbonApiService: CarbonApiService) { }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
   public submitSearch(): void {
-    this.carbonApiService.getDailyCarbonIntensityPrognosis(this.searchForm.value.date).subscribe(
-      result => console.log(result)
-    );
+    this.carbonApiService.sendSubmissionData(this.searchForm.value.date);
   }
 
 }
