@@ -26,6 +26,11 @@ export class CarbonApiService {
     this.submitSender.next(date);
   }
 
+  public reformatDate(date: string): string {
+    const splittedDate = date.split('T');
+    return splittedDate[0] + ' ' + splittedDate[1].replace('Z', '');
+  }
+
   public getDailyCarbonIntensityPrognosis(date: Date): Observable<Array<CarbonIntensityResult>> {
     return this.getDailyMappedApiResult(date);
   }
@@ -65,7 +70,7 @@ export class CarbonApiService {
       return (prev.getIntensityForecast() > current.getIntensityForecast()) ? prev : current;
     });
     return new CarbonIntensityResult(
-      CarbonIntensityResultType.MAX_FORECAST,
+      CarbonIntensityResultType.MAXIMUM_CARBON_INTENSITY_FORECAST,
       maxForecastResult.getMeasuringTime(),
       maxForecastResult.getIntensityForecast(),
       maxForecastResult.getIntensityIndex());
@@ -76,7 +81,7 @@ export class CarbonApiService {
       return (prev.getIntensityForecast() < current.getIntensityForecast()) ? prev : current;
     });
     return new CarbonIntensityResult(
-      CarbonIntensityResultType.MIN_FORECAST,
+      CarbonIntensityResultType.MINIMUM_CARBON_INTENSITY_FORECAST,
       minForecastResult.getMeasuringTime(),
       minForecastResult.getIntensityForecast(),
       minForecastResult.getIntensityIndex());
@@ -87,7 +92,7 @@ export class CarbonApiService {
       return (prev.getIntensityMeasured() > current.getIntensityMeasured()) ? prev : current;
     });
     return new CarbonIntensityResult(
-      CarbonIntensityResultType.MAX_MEASURED,
+      CarbonIntensityResultType.MAXIMUM_CARBON_INTENSITY_MEASURED,
       maxMeasuredResult.getMeasuringTime(),
       maxMeasuredResult.getIntensityForecast(),
       maxMeasuredResult.getIntensityIndex());
@@ -98,7 +103,7 @@ export class CarbonApiService {
       return (prev.getIntensityMeasured() < current.getIntensityMeasured()) ? prev : current;
     });
     return new CarbonIntensityResult(
-      CarbonIntensityResultType.MAX_MEASURED,
+      CarbonIntensityResultType.MINIMUM_CARBON_INTENSITY_MEASURED,
       minMeasuredResult.getMeasuringTime(),
       minMeasuredResult.getIntensityForecast(),
       minMeasuredResult.getIntensityIndex());
@@ -110,9 +115,9 @@ export class CarbonApiService {
       averageMeasuredIntensity += element.getIntensityMeasured() ? element.getIntensityMeasured() : 0;
     });
     return new CarbonIntensityResult(
-      CarbonIntensityResultType.AVG_MEASURED,
+      CarbonIntensityResultType.AVG_CARBON_INTENSITY_MEASURED,
       this.parseStringToDate(apiResults[0].getMeasuringTime()),
-      averageMeasuredIntensity / apiResults.length,
+      Math.floor(averageMeasuredIntensity / apiResults.length),
       this.calculateMostCommonIndex(apiResults));
   }
 
@@ -122,9 +127,9 @@ export class CarbonApiService {
       averageForecastIntensity += element.getIntensityForecast() ? element.getIntensityForecast() : 0;
     });
     return new CarbonIntensityResult(
-      CarbonIntensityResultType.AVG_FORECAST,
+      CarbonIntensityResultType.AVG_CARBON_INTENSITY_FORECAST,
       this.parseStringToDate(apiResults[0].getMeasuringTime()),
-      averageForecastIntensity / apiResults.length,
+      Math.floor(averageForecastIntensity / apiResults.length),
       this.calculateMostCommonIndex(apiResults));
   }
 
@@ -142,7 +147,7 @@ export class CarbonApiService {
         indexMap.set(this.HIGH_INDEX, indexMap.get(this.HIGH_INDEX) + 1);
       }
     });
-    let maxCounter = [indexMap.get(this.LOW_INDEX), indexMap.get(this.MODERATE_INDEX), indexMap.get(this.HIGH_INDEX)]
+    const maxCounter = [indexMap.get(this.LOW_INDEX), indexMap.get(this.MODERATE_INDEX), indexMap.get(this.HIGH_INDEX)]
       .sort()
       .reverse()[this.FIRST_ELEMENT_POSITION];
     let result;

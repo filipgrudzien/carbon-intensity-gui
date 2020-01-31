@@ -1,3 +1,28 @@
 #result-name {
-    margin: 15px 0px 20px 0px;
+  margin: 15px 0px 20px 0px;
 }
+
+#result-container {
+    padding-bottom: 15px;
+    margin-bottom: 30px;
+}
+
+.result-box {
+  padding: 10px;
+  margin: 10px 0px 10px 0px;
+}
+
+.column-name-box {
+    padding: 10px;
+    margin: 10px 0px 0px 0px;
+    border-bottom: solid 1px;
+}
+
+.result-box:nth-child(even) {
+  background-color: #cccccc;
+}
+
+.bold-name {
+  font-weight: bold;
+}
+

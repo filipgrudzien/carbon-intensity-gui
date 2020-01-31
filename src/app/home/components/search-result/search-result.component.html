@@ -1,12 +1,37 @@
-<div class="container text-center shadow rounded">
+<div class="container text-center shadow rounded" id="result-container">
   <div class="row text-center">
     <div class="col-sm-2 col-md-2 col-lg-2"></div>
     <div class="col-sm-8 col-md-8 col-lg-8" id="apptitle-holder">
-      <h3 id="result-name"> {{ resultsTitle | uppercase }} </h3>
+      <h2 id="result-name"> {{ resultsTitle | uppercase }} </h2>
     </div>
     <div class="col-sm-2 col-md-2 col-lg-2"></div>
   </div>
-  <div class="text-center row">
-    
+  <div class="text-center row column-name-box" *ngIf="results">
+    <div class="col-sm-3 col-md-3 col-lg-3 bold-name">
+      {{ resultColumnName | uppercase }}
+    </div>
+    <div class="col-sm-3 col-md-3 col-lg-3 bold-name">
+       {{ dateTimeColumnName | uppercase }}
+    </div>
+    <div class="col-sm-3 col-md-3 col-lg-3 bold-name">
+      {{ carbonIntensityColumnName | uppercase }}
+    </div>
+    <div class="col-sm-3 col-md-3 col-lg-3 bold-name">
+      {{ intensityIndexColumnName | uppercase }}
+    </div>
+  </div>
+  <div class="text-center row result-box" *ngFor="let result of results">
+    <div class="col-sm-3 col-md-3 col-lg-3 bold-name">
+      {{ result.getResultType() }}
+    </div>
+    <div class="col-sm-3 col-md-3 col-lg-3">
+       {{ formatDate(result) }}
+    </div>
+    <div class="col-sm-3 col-md-3 col-lg-3">
+      {{ result.getIntensity() }}
+    </div>
+    <div class="col-sm-3 col-md-3 col-lg-3">
+      {{ result.getIntensityIndex() }}
+    </div>
   </div>
 </div>
