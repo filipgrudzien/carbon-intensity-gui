@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { CarbonIntensityDto } from 'src/app/shared/models/CarbonIntensityDto';
 import { Observable, Subject, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { CarbonIntensityResult } from 'src/app/shared/models/CarbonIntensityResult';
+import { CarbonIntensityResultType } from 'src/app/shared/models/CarbonIntensityResultType';
 
 @Injectable({
   providedIn: 'root'
@@ -10,89 +12,140 @@ import { map, switchMap } from 'rxjs/operators';
 export class CarbonApiService {
 
   private readonly API_URL = 'https://api.carbonintensity.org.uk/intensity/date';
+  private readonly LOW_INDEX = 'low';
+  private readonly MODERATE_INDEX = 'moderate';
+  private readonly HIGH_INDEX = 'high';
+  private readonly FIRST_ELEMENT_POSITION = '0';
 
   constructor(private http: HttpClient) { }
 
-  public getDailyCarbonIntensityPrognosis(date: Date): Observable<Array<CarbonIntensityDto>> {
+  public getDailyCarbonIntensityPrognosis(date: Date): Observable<Array<CarbonIntensityResult>> {
     return this.getDailyMappedApiResult(date);
   }
 
-  private getDailyMappedApiResult(date: Date): Observable<Array<CarbonIntensityDto>> {
+  private getDailyMappedApiResult(date: Date): Observable<Array<CarbonIntensityResult>> {
     const parsedDate = this.parseDateToString(date);
-    const allResults = new Array<CarbonIntensityDto>();
+    const apiResults = new Array<CarbonIntensityDto>();
     const finalResult$ = this.http.get(this.API_URL + '/' + parsedDate)
       .pipe(
         map(data => {
           let flatteredData = data.data;
           flatteredData.forEach(element => {
-            allResults.push(new CarbonIntensityDto(
+            apiResults.push(new CarbonIntensityDto(
               element.intensity.actual,
               element.intensity.forecast,
               element.intensity.index,
               element.from));
           });
-          return this.prepareResultsForDisplay(allResults);
+          return this.prepareResultsForDisplay(apiResults);
         }),
       );
     return finalResult$;
   }
 
-  private prepareResultsForDisplay(allResults: Array<CarbonIntensityDto>): Array<CarbonIntensityDto> {
+  private prepareResultsForDisplay(apiResults: Array<CarbonIntensityDto>): Array<CarbonIntensityResult> {
     return Array.of(
-      this.retrieveMaxForeCastPrognosis(allResults),
-      this.retrieveMinForeCastPrognosis(allResults),
-      this.retrieveMaxMeasuredPrognosis(allResults),
-      this.retrieveMinMeasuredPrognosis(allResults),
-      this.calculateAverageMeasuredPrognosis(allResults),
-      this.calculateAverageForecastPrognosis(allResults));
+      this.retrieveMaxForecastPrognosis(apiResults),
+      this.retrieveMinForecastPrognosis(apiResults),
+      this.retrieveMaxMeasuredPrognosis(apiResults),
+      this.retrieveMinMeasuredPrognosis(apiResults),
+      this.calculateAverageMeasuredPrognosis(apiResults),
+      this.calculateAverageForecastPrognosis(apiResults));
   }
 
-  private retrieveMaxForeCastPrognosis(allResults: Array<CarbonIntensityDto>): CarbonIntensityDto {
-    return allResults.reduce((prev, current) => {
+  private retrieveMaxForecastPrognosis(apiResults: Array<CarbonIntensityDto>): CarbonIntensityResult {
+    const maxForecastResult = apiResults.reduce((prev, current) => {
       return (prev.getIntensityForecast() > current.getIntensityForecast()) ? prev : current;
     });
+    return new CarbonIntensityResult(
+      CarbonIntensityResultType.MAX_FORECAST,
+      maxForecastResult.getMeasuringTime(),
+      maxForecastResult.getIntensityForecast(),
+      maxForecastResult.getIntensityIndex());
   }
 
-  private retrieveMinForeCastPrognosis(allResults: Array<CarbonIntensityDto>): CarbonIntensityDto {
-    return allResults.reduce((prev, current) => {
+  private retrieveMinForecastPrognosis(apiResults: Array<CarbonIntensityDto>): CarbonIntensityResult {
+    const minForecastResult = apiResults.reduce((prev, current) => {
       return (prev.getIntensityForecast() < current.getIntensityForecast()) ? prev : current;
     });
+    return new CarbonIntensityResult(
+      CarbonIntensityResultType.MIN_FORECAST,
+      minForecastResult.getMeasuringTime(),
+      minForecastResult.getIntensityForecast(),
+      minForecastResult.getIntensityIndex());
   }
 
-  private retrieveMaxMeasuredPrognosis(allResults: Array<CarbonIntensityDto>): CarbonIntensityDto {
-    return allResults.reduce((prev, current) => {
+  private retrieveMaxMeasuredPrognosis(apiResults: Array<CarbonIntensityDto>): CarbonIntensityResult {
+    const maxMeasuredResult = apiResults.reduce((prev, current) => {
       return (prev.getIntensityMeasured() > current.getIntensityMeasured()) ? prev : current;
     });
+    return new CarbonIntensityResult(
+      CarbonIntensityResultType.MAX_MEASURED,
+      maxMeasuredResult.getMeasuringTime(),
+      maxMeasuredResult.getIntensityForecast(),
+      maxMeasuredResult.getIntensityIndex());
   }
 
-  private retrieveMinMeasuredPrognosis(allResults: Array<CarbonIntensityDto>): CarbonIntensityDto {
-    return allResults.reduce((prev, current) => {
+  private retrieveMinMeasuredPrognosis(apiResults: Array<CarbonIntensityDto>): CarbonIntensityResult {
+    const minMeasuredResult = apiResults.reduce((prev, current) => {
       return (prev.getIntensityMeasured() < current.getIntensityMeasured()) ? prev : current;
     });
+    return new CarbonIntensityResult(
+      CarbonIntensityResultType.MAX_MEASURED,
+      minMeasuredResult.getMeasuringTime(),
+      minMeasuredResult.getIntensityForecast(),
+      minMeasuredResult.getIntensityIndex());
   }
 
-  private calculateAverageMeasuredPrognosis(allResults: Array<CarbonIntensityDto>): CarbonIntensityDto {
+  private calculateAverageMeasuredPrognosis(apiResults: Array<CarbonIntensityDto>): CarbonIntensityResult {
     let averageMeasuredIntensity = 0;
-    allResults.forEach(element => {
+    apiResults.forEach(element => {
       averageMeasuredIntensity += element.getIntensityMeasured() ? element.getIntensityMeasured() : 0;
     });
-    return new CarbonIntensityDto(
-      averageMeasuredIntensity / allResults.length,
-      null,
-      null,
-      this.parseStringToDate(allResults[0].getMeasuringTime()));
+    return new CarbonIntensityResult(
+      CarbonIntensityResultType.AVG_MEASURED,
+      this.parseStringToDate(apiResults[0].getMeasuringTime()),
+      averageMeasuredIntensity / apiResults.length,
+      this.calculateMostCommonIndex(apiResults));
   }
 
-  private calculateAverageForecastPrognosis(allResults: Array<CarbonIntensityDto>): CarbonIntensityDto {
+  private calculateAverageForecastPrognosis(apiResults: Array<CarbonIntensityDto>): CarbonIntensityResult {
     let averageForecastIntensity = 0;
-    allResults.forEach(element => {
+    apiResults.forEach(element => {
       averageForecastIntensity += element.getIntensityForecast() ? element.getIntensityForecast() : 0;
     });
-    return new CarbonIntensityDto(
-      averageForecastIntensity / allResults.length,
-      null,
-      null,
-      this.parseStringToDate(allResults[0].getMeasuringTime()));
+    return new CarbonIntensityResult(
+      CarbonIntensityResultType.AVG_FORECAST,
+      this.parseStringToDate(apiResults[0].getMeasuringTime()),
+      averageForecastIntensity / apiResults.length,
+      this.calculateMostCommonIndex(apiResults));
+  }
+
+  private calculateMostCommonIndex(apiResults: Array<CarbonIntensityDto>): string {
+    let indexMap = new Map();
+    indexMap.set(this.LOW_INDEX, 0);
+    indexMap.set(this.MODERATE_INDEX, 0);
+    indexMap.set(this.HIGH_INDEX, 0);
+    apiResults.forEach(element => {
+      if (element.getIntensityIndex() === this.LOW_INDEX) {
+        indexMap.set(this.LOW_INDEX, indexMap.get(this.LOW_INDEX) + 1);
+      } else if (element.getIntensityIndex() === this.MODERATE_INDEX) {
+        indexMap.set(this.MODERATE_INDEX, indexMap.get(this.MODERATE_INDEX) + 1);
+      } else if (element.getIntensityIndex() === this.HIGH_INDEX) {
+        indexMap.set(this.HIGH_INDEX, indexMap.get(this.HIGH_INDEX) + 1);
+      }
+    });
+    console.log(indexMap);
+    let maxCounter = [indexMap.get(this.LOW_INDEX), indexMap.get(this.MODERATE_INDEX), indexMap.get(this.HIGH_INDEX)]
+      .sort()
+      .reverse()[this.FIRST_ELEMENT_POSITION];
+    let result;
+    indexMap.forEach((value, key) => {
+      if (value === maxCounter) {
+        result = key;
+      }
+    });
+    return result;
   }
 
   private parseDateToString(date: Date): string {

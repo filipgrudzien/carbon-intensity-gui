@@ -2,17 +2,17 @@ export class CarbonIntensityDto {
 
     public constructor(intensityMeasured: number,
                        intensityForecast: number,
-                       intensityGrade: string,
+                       intensityIndex: string,
                        measuringTime: string) {
         this.intensityMeasured = intensityMeasured;
         this.intensityForecast = intensityForecast;
-        this.intensityGrade = intensityGrade;
+        this.intensityIndex = intensityIndex;
         this.measuringTime = measuringTime;
     }
 
     private intensityMeasured: number;
     private intensityForecast: number;
-    private intensityGrade: string;
+    private intensityIndex: string;
     private measuringTime: string;
 
     public getIntensityMeasured(): number {
@@ -23,8 +23,8 @@ export class CarbonIntensityDto {
         return this.intensityForecast;
     }
 
-    public getIntensityGrade(): string {
-        return this.intensityGrade;
+    public getIntensityIndex(): string {
+        return this.intensityIndex;
     }
 
     public getMeasuringTime(): string {
