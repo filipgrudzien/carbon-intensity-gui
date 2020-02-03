@@ -25,7 +25,7 @@ export class SearchResultComponent implements OnInit {
       date => {
         this.carbonApiService.getDailyCarbonIntensityPrognosis(date).subscribe(
           results => {
-            console.log('dostalem', results);
+            document.getElementById('result-container').hidden = false;
             this.results = results;
           });
       });
