@@ -11,7 +11,7 @@
       {{ resultColumnName | uppercase }}
     </div>
     <div class="col-sm-3 col-md-3 col-lg-3 bold-name">
-       {{ dateTimeColumnName | uppercase }}
+      {{ dateTimeColumnName | uppercase }}
     </div>
     <div class="col-sm-3 col-md-3 col-lg-3 bold-name">
       {{ carbonIntensityColumnName | uppercase }}
@@ -25,13 +25,24 @@
       {{ result.getResultType() }}
     </div>
     <div class="col-sm-3 col-md-3 col-lg-3">
-       {{ formatDate(result) }}
+      <p> {{ formatDate(result) }} </p>
     </div>
     <div class="col-sm-3 col-md-3 col-lg-3">
-      {{ result.getIntensity() }}
+      <p> {{ result.getIntensity() }} </p>
     </div>
-    <div class="col-sm-3 col-md-3 col-lg-3">
-      {{ result.getIntensityIndex() }}
+    <div class="col-sm-3 col-md-3 col-lg-3 bold-name">
+      <p *ngIf="result.isIndexLow()" class="low-index">
+        <mat-progress-bar mode="determinate" value="{{LOW_VALUE}}"></mat-progress-bar>
+        {{ result.getIntensityIndex() }}
+      </p>
+      <p *ngIf="result.isIndexModerate()" class="moderate-index">
+        <mat-progress-bar mode="determinate" value="{{MODERATE_VALUE}}"></mat-progress-bar>
+        {{ result.getIntensityIndex() }}
+      </p>
+      <p *ngIf="result.isIndexHigh()" class="high-index">
+        <mat-progress-bar mode="determinate" value="{{HIGH_VALUE}}"></mat-progress-bar>
+        {{ result.getIntensityIndex() }}
+      </p>
     </div>
   </div>
 </div>

@@ -10,6 +10,7 @@ import { CarbonApiService } from 'src/app/core/services/carbon-api.service';
 export class SearchBarComponent implements OnInit {
 
   public searchTitle = 'search bar';
+
   searchForm = new FormGroup({
     date: new FormControl(new Date(), [Validators.required])
   });

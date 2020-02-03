@@ -41,7 +41,8 @@ export class CarbonApiService {
     const finalResult$ = this.http.get(this.API_URL + '/' + parsedDate)
       .pipe(
         map(data => {
-          let flatteredData = data.data;
+          // tslint:disable-next-line:no-string-literal
+          let flatteredData = data['data'];
           flatteredData.forEach(element => {
             apiResults.push(new CarbonIntensityDto(
               element.intensity.actual,

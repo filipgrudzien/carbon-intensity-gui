@@ -26,3 +26,14 @@
   font-weight: bold;
 }
 
+.low-index {
+  color: #00c06a;
+}
+
+.moderate-index {
+  color: #ff7b00;
+}
+
+.high-index {
+  color: #e71837;
+}

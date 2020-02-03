@@ -34,7 +34,15 @@ export class CarbonIntensityResult {
         return this.intensityIndex;
     }
 
-    /* public getResultTypeValue() {
-        return CarbonIntensityResultType[this.resultType.toString()];
-    } */
+    public isIndexLow() {
+        return this.intensityIndex === 'low';
+    }
+
+    public isIndexModerate() {
+        return this.intensityIndex === 'moderate';
+    }
+
+    public isIndexHigh() {
+        return this.intensityIndex === 'high';
+    }
 }

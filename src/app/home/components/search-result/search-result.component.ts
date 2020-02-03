@@ -16,6 +16,9 @@ export class SearchResultComponent implements OnInit {
   public dateTimeColumnName = 'date/time';
   public carbonIntensityColumnName = 'carbon intensity';
   public intensityIndexColumnName = 'intensity index';
+  public readonly LOW_VALUE = 15;
+  public readonly MODERATE_VALUE = 50;
+  public readonly HIGH_VALUE = 90;
 
   constructor(private carbonApiService: CarbonApiService) {
     carbonApiService.submitSent$.subscribe(
