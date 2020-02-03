@@ -21,28 +21,28 @@
     </div>
   </div>
   <div class="text-center row result-box" *ngFor="let result of results">
-    <div class="col-sm-3 col-md-3 col-lg-3 bold-name">
+    <div class="col-sm-3 col-md-3 col-lg-3 bold-name result-column">
       {{ result.getResultType() }}
     </div>
-    <div class="col-sm-3 col-md-3 col-lg-3">
-      <p> {{ formatDate(result) }} </p>
+    <div class="col-sm-3 col-md-3 col-lg-3 special-result-column">
+      {{ formatDate(result) }}
     </div>
-    <div class="col-sm-3 col-md-3 col-lg-3">
-      <p> {{ result.getIntensity() }} </p>
+    <div class="col-sm-3 col-md-3 col-lg-3 special-result-column">
+      {{ result.getIntensity() }}
     </div>
-    <div class="col-sm-3 col-md-3 col-lg-3 bold-name">
-      <p *ngIf="result.isIndexLow()" class="low-index">
+    <div class="col-sm-3 col-md-3 col-lg-3 bold-name result-column">
+      <div *ngIf="result.isIndexLow()" class="low-index pushed-bar">
         <mat-progress-bar mode="determinate" value="{{LOW_VALUE}}"></mat-progress-bar>
         {{ result.getIntensityIndex() }}
-      </p>
-      <p *ngIf="result.isIndexModerate()" class="moderate-index">
+      </div>
+      <div *ngIf="result.isIndexModerate()" class="moderate-index pushed-bar">
         <mat-progress-bar mode="determinate" value="{{MODERATE_VALUE}}"></mat-progress-bar>
         {{ result.getIntensityIndex() }}
-      </p>
-      <p *ngIf="result.isIndexHigh()" class="high-index">
+      </div>
+      <div *ngIf="result.isIndexHigh()" class="high-index pushed-bar">
         <mat-progress-bar mode="determinate" value="{{HIGH_VALUE}}"></mat-progress-bar>
         {{ result.getIntensityIndex() }}
-      </p>
+      </div>
     </div>
   </div>
 </div>
