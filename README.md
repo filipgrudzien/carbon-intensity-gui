@@ -1,3 +1,10 @@
+# Project status 
+FINISHED
+
+# Short description
+
+This app was created for learning purposes. It uses external API (https://carbon-intensity.github.io/api-definitions/?javascript#carbon-intensity-api-v2-0-0). 
+
 # CarbonIntensity
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.2.
